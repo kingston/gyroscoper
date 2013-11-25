@@ -40,6 +40,7 @@ app.post('/post', post.post);
 app.get('/admin', admin.index);
 app.post('/admin/login', admin.login);
 app.get('/admin/logout', admin.logout);
+app.get('/admin/download', admin.download);
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));

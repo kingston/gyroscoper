@@ -1,6 +1,11 @@
 <% layout('admin_layout') -%>
-<h1>Gyroscoper Admin Interface</h1>
-
+<h1>Gyroscoper Admin Interface <a href="/admin/logout">(log out)</a></h1>
+<a href="/admin/download">Download Data</a>
+  <% if (downloadError) { %>
+  <div class="alert alert-danger">
+    <strong>Sorry!</strong> We encountered an error downloading the data: <%= downloadError %>
+  </div>
+  <% } %>
 <table class="table table-bordered">
   <thead>
     <tr>

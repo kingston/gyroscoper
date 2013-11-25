@@ -14,3 +14,5 @@ results
 node_modules
 
 settings.js
+
+gyrodata/**

@@ -1,4 +1,5 @@
 var entriesProvider = require('../entriesProvider');
+var entryfiles = require('../entryfiles');
 var _ = require('underscore');
 
 /*
@@ -86,11 +87,21 @@ exports.post = function(req, res, next) {
 
   collection.insert(data, {w:1}, function(err, objects) {
     if (err) {
+      console.log("error inserting data: " + err.toString());
       sendError(res, "Unable to insert data");
       return;
     }
+    // download entry to files
+    var entry = objects[0];
+    entryfiles.downloadEntry(entry, function(err) {
+      if (err) {
+        console.log("error downloading data: " + err.toString());
+        sendError(res, "Unable to download data");
+        return;
+      }
 
-    console.log("successfully uploaded new sample");
-    res.send({success: true});
+      console.log("successfully uploaded new sample");
+      res.send({success: true});
+    });
   });
 };

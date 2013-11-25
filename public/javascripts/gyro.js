@@ -196,8 +196,6 @@ function stopRecording() {
     gyro: gyroData
   };
   
-  console.log(data);
-
   $.ajax({
     type: "POST",
     url: "/post",

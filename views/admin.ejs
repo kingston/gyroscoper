@@ -1,0 +1,21 @@
+<% layout('admin_layout') -%>
+<h1>Gyroscoper Admin Interface</h1>
+
+<table class="table table-bordered">
+  <thead>
+    <tr>
+      <td>Entry #</td>
+      <td># Accel Records</td>
+      <td># Gyro Records</td>
+    </tr>
+  </thead>
+  <tbody>
+<% _.forEach(entries, function(entry, i) { %>
+    <tr>
+      <td>#<%= i + 1 %></td>
+      <td><%= entry.accel.length %></td>
+      <td><%= entry.gyro.length %></td>
+    </tr>
+<% }) %>
+  </tbody>
+</table>

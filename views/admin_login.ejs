@@ -1,0 +1,14 @@
+<% layout('admin_layout') -%>
+<div class="login-form">
+  <h1>Admin Log In</h1>
+  <% if (invalidPassword) { %>
+  <div class="alert alert-danger">
+    <strong>Sorry!</strong> That was the incorrect password.
+  </div>
+  <% } %>
+  <form action="/admin/login" role="form" method="post">
+    <input type="password" class="form-control" name="password" placeholder="Password" autofocus />
+    <button type="submit" class="btn btn-primary btn-lg btn-block">Log In</button>
+  </form>
+</div>
+

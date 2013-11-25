@@ -1,4 +1,4 @@
-var entriesProvider = require('../entriesProvider');
+var entriesProvider = require('../entriesprovider');
 var entryfiles = require('../entryfiles');
 var _ = require('underscore');
 

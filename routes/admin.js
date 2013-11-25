@@ -1,5 +1,5 @@
 // Provides routes for admin interface
-var entriesProvider = require('../entriesProvider');
+var entriesProvider = require('../entriesprovider');
 var entryfiles = require('../entryfiles');
 var settings = require('../settings');
 var _ = require('underscore');

@@ -1,11 +1,11 @@
-
+var entriesProvider = require('../entriesProvider');
 var _ = require('underscore');
 
 /*
  * POST gyroscoper data.
  */
 
-var validKeys = ['accel', 'gyro'];
+var validKeys = ['age', 'weight', 'height', 'gender', 'accel', 'gyro'];
 
 sendError = function(res, message) {
   res.send({
@@ -25,6 +25,21 @@ exports.post = function(req, res, next) {
 
   // filter out invalid keys
   data = _.pick(data, validKeys);
+
+  // verify age/weight/gender
+  var verifyNumber = function(num, min, max) {
+    return _.isFinite(num) && min < num && num < max;
+  };
+
+  if (!verifyNumber(data.age, 3, 150) || !verifyNumber(data.weight, 2, 500) || !verifyNumber(data.height, 50, 300)) {
+    sendError(res, "Invalid age/weight/height provided");
+    return;
+  }
+
+  if (!_.contains(['male', 'female'], data.gender)) {
+    sendError(res, "Invalid gender provided");
+    return;
+  }
 
   // verify gyro/accel data
   if (!_.isArray(data.gyro) || !_.isArray(data.accel)) {

@@ -5,6 +5,7 @@
   <thead>
     <tr>
       <td>Entry #</td>
+      <td>Time</td>
       <td># Accel Records</td>
       <td># Gyro Records</td>
     </tr>
@@ -13,6 +14,7 @@
 <% _.forEach(entries, function(entry, i) { %>
     <tr>
       <td>#<%= i + 1 %></td>
+      <td><%= entry.created_at.toISOString().replace(/T/, ' ').replace(/\..+/, '') %></td>
       <td><%= entry.accel.length %></td>
       <td><%= entry.gyro.length %></td>
     </tr>

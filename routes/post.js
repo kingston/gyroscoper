@@ -74,7 +74,7 @@ exports.post = function(req, res, next) {
 
   }
   data.gyro = filterRawData(data.gyro, ['time', 'alpha', 'beta', 'gamma']);
-  data.accel = filterRawData(data.gyro, ['time', 'x', 'y', 'z']);
+  data.accel = filterRawData(data.accel, ['time', 'x', 'y', 'z']);
 
   if (invalidData) {
     sendError(res, "Invalid data submitted");

@@ -1,5 +1,5 @@
 // service for accessing entries in CSV form
-var entriesProvider = require('./entriesProvider');
+var entriesProvider = require('./entriesprovider');
 var fs = require('fs');
 var path = require('path');
 var archiver = require('archiver');

@@ -1,4 +1,4 @@
-var entriesProvider = require('../entriesProvider');
+var entriesProvider = require('../entriesprovider');
 var entryfiles = require('../entryfiles');
 var _ = require('underscore');
 
@@ -79,7 +79,7 @@ exports.post = function(req, res, next) {
 
   }
   data.gyro = filterRawData(data.gyro, ['time', 'alpha', 'beta', 'gamma']);
-  data.accel = filterRawData(data.gyro, ['time', 'x', 'y', 'z']);
+  data.accel = filterRawData(data.accel, ['time', 'x', 'y', 'z']);
 
   // add user agent
   data.device = req.headers['user-agent'];

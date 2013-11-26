@@ -6,7 +6,7 @@ var _ = require('underscore');
  * POST gyroscoper data.
  */
 
-var validKeys = ['age', 'weight', 'height', 'gender', 'accel', 'gyro'];
+var validKeys = ['age', 'weight', 'height', 'gender', 'accel', 'gyro', 'screenHeight'];
 
 sendError = function(res, message) {
   res.send({
@@ -35,6 +35,11 @@ exports.post = function(req, res, next) {
   if (!verifyNumber(data.age, 3, 150) || !verifyNumber(data.weight, 2, 500) || !verifyNumber(data.height, 50, 300)) {
     sendError(res, "Invalid age/weight/height provided");
     return;
+  }
+
+  if (!verifyNumber(data.screenHeight, 0, 10000)) {
+    // just skip out
+    data.screenHeight = 0;
   }
 
   if (!_.contains(['male', 'female'], data.gender)) {

@@ -187,13 +187,19 @@ function stopRecording() {
   recording = false;
   recordDuration = 0;
 
+  var screenHeight = 0;
+  if (window.screen && window.screen.height) {
+    screenHeight = window.screen.height;
+  }
+
   var data = {
     age: age,
     weight: weight,
     height: height,
     gender: gender,
     accel: accelData,
-    gyro: gyroData
+    gyro: gyroData,
+    screenHeight: screenHeight
   };
   
   $.ajax({

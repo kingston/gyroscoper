@@ -23,6 +23,7 @@ var writeEntry = function(entry, index, callback) {
   // generate meta file
   var metaFile = "";
   metaFile += "LogVersion: G6\n";
+  metaFile += "TerminalType: " + entry.device;
   metaFile += "\n";
   metaFile += "Activity: walk\n";
   metaFile += "\n";

@@ -1,6 +1,6 @@
 var gyroData = [];
 var accelData = [];
-var gyroscoperEnabled = false;
+var isLoaded = false;
 
 // why not be accurate ;p
 var KG_TO_LBS = 2.20462;
@@ -52,9 +52,14 @@ $(function() {
 });
 
 $(function() {
-  if (!window.DeviceOrientationEvent &&  !window.DeviceMotionEvent) {
-    showStatus("Sorry, your device does not support accelerometer recording.", "danger");
-    $("#record-button").attr("disabled", "disabled");
+  if (settings.mobileAgentOnly) {
+    var isMobile = navigator.userAgent.match(/(iPhone|iPod|iPad|Android|BlackBerry)/);
+    if (!isMobile) {
+      showStatus("Please use a mobile device like an iPhone or iPod to use Gyroscoper.", "danger");
+      return;
+    }
+  }
+  if (!window.DeviceOrientationEvent) {
     return;
   }
   $("#start-record").click(startRecording);
@@ -69,7 +74,17 @@ $(function() {
       accel(event.acceleration);
     }, true);
   }
+  showStatus("Loading...", "info");
+  setTimeout(function() {
+    if (!isLoaded) {
+      showStatus("Sorry, your device does not support accelerometer recording.", "danger");
+    }
+  }, 1000);
 });
+
+function hideStatus() {
+  $("#status").hide();
+}
 
 function showStatus(message, type) {
   $("#status")
@@ -95,6 +110,7 @@ function tilt(alpha, beta, gamma) {
 }
 
 function accel(acc) {
+  // check we get all axis
   if (recording) {
     accelData.push({
       time: recordTimestamp(),
@@ -102,6 +118,15 @@ function accel(acc) {
       y: acc.y,
       z: acc.z
     });
+  }
+  if (!isLoaded) {
+    if (settings.requireAllAxis && (acc.x === null || acc.y === null || acc.z === null)) {
+      showStatus("Sorry, your device does not support full accelerometer recording.", "danger");
+    } else {
+      $("#start-record").attr("disabled", null);
+      hideStatus();
+    }
+    isLoaded = true;
   }
 }
 
@@ -120,7 +145,6 @@ function updateRecordingStatus() {
 
   $("#record-duration").text(recordDuration + "s");
 }
-
 
 function startRecording() {
   var getValidValue = function(elemId, min, max) {
@@ -172,6 +196,7 @@ function startRecording() {
   gender = $("#form-male").is(":checked") ? "male" : "female";
 
   $(".form-userdata").hide();
+  hideStatus();
   $("#record-status").show();
   recordInterval = setInterval(updateRecordingStatus, 1000);
   recordStart = new Date();
@@ -185,13 +210,21 @@ function stopRecording() {
   clearInterval(recordInterval);
   recordInterval = null;
   recording = false;
-  recordDuration = 0;
 
   var screenHeight = 0;
   if (window.screen && window.screen.height) {
     screenHeight = window.screen.height;
   }
 
+  $(".form-userdata").show();
+  $("#record-status").hide();
+
+  if (recordDuration < 15) {
+    showStatus("Please record at least 15 seconds of walking", "danger");
+    recordDuration = 0;
+    return;
+  }
+  recordDuration = 0;
   var data = {
     age: age,
     weight: weight,
@@ -212,13 +245,10 @@ function stopRecording() {
     if (data.success) {
       showStatus("Successfully uploaded data!", "success");
     } else {
-      showStatus("Error uploading data! Please try again.", "danger");
+      showStatus("Error uploading data: " + data.message + "!", "danger");
     }
   }).fail(function(jqXHR, textStatus) {
     showStatus("Error uploading data! Please try again.", "danger");
   });
-
-  $(".form-userdata").show();
-  $("#record-status").hide();
   showStatus("Uploading data...", "info");
 }

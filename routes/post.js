@@ -1,6 +1,7 @@
 var entriesProvider = require('../entriesprovider');
 var entryfiles = require('../entryfiles');
 var _ = require('underscore');
+var settings = require('../settings');
 
 /*
  * POST gyroscoper data.
@@ -54,7 +55,7 @@ exports.post = function(req, res, next) {
   }
 
   var invalidData = false;
-  var filterRawData = function(entries, valid) {
+  var filterRawData = function(entries, valid, allEntriesPresent) {
     entries = _.map(entries, function (entry) {
       // make sure only valid keys are there
       entry = _.pick(entry, valid);
@@ -69,7 +70,11 @@ exports.post = function(req, res, next) {
       });
       // ignore entries with no data other than time
       if (validEntries > 1) {
-        return entry;
+        if (validEntries == valid.length) {
+          return entry;
+        } else {
+          return null;
+        }
       } else {
         return null;
       }
@@ -78,15 +83,26 @@ exports.post = function(req, res, next) {
     return _.filter(entries, function(x) { return x; });
 
   }
-  data.gyro = filterRawData(data.gyro, ['time', 'alpha', 'beta', 'gamma']);
-  data.accel = filterRawData(data.accel, ['time', 'x', 'y', 'z']);
+  data.gyro = filterRawData(data.gyro, ['time', 'alpha', 'beta', 'gamma'], false);
+  data.accel = filterRawData(data.accel, ['time', 'x', 'y', 'z'], true);
 
-  // add user agent
-  data.device = req.headers['user-agent'];
+  if (!data.accel.length) {
+    sendError(res, "No valid entries received");
+    return;
+  }
 
   if (invalidData) {
     sendError(res, "Invalid data submitted");
     return;
+  }
+
+  // add user agent
+  data.device = req.headers['user-agent'];
+  if (settings.mobileAgentOnly) {
+    if (!data.device || !data.device.match(/(iPhone|iPod|iPad|Android|BlackBerry)/)) {
+      sendError(res, "Data not submitted from a mobile device.");
+      return;
+    }
   }
 
   // beef up the keys

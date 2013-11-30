@@ -219,8 +219,8 @@ function stopRecording() {
   $(".form-userdata").show();
   $("#record-status").hide();
 
-  if (recordDuration < 15) {
-    showStatus("Please record at least 15 seconds of walking", "danger");
+  if (recordDuration < 10) {
+    showStatus("Please record at least 10 seconds of walking", "danger");
     recordDuration = 0;
     return;
   }
